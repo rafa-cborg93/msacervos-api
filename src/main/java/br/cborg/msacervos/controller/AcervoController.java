@@ -23,4 +23,15 @@ public class AcervoController {
         DefaultResponse response = acervoService.createAcervo(request);
         return ResponseEntity.status(response.getCode()).body(response);
     }
+
+    @PutMapping("/{id}/update")
+    public ResponseEntity<DefaultResponse> updateAcervo(@PathVariable("id") Long id, @RequestBody AcervoRequest request) {
+        DefaultResponse response = acervoService.updateAcervo(id, request);
+        return ResponseEntity.status(response.getCode()).body(response);
+    }
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<DefaultResponse> deleteAcervo(@PathVariable("id") Long id) {
+        DefaultResponse response = acervoService.deleteAcervo(id);
+        return ResponseEntity.status(response.getCode()).body(response);
+    }
 }

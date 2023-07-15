@@ -48,4 +48,17 @@ public class AcervoUtils {
         });
         return acervoResponseList;
     }
+
+    public Acervo buildToUpdate(AcervoRequest request, Acervo acervo) {
+        acervo.setIsbn(request.getIsbn());
+        acervo.setNumeroChamada(request.getNumeroChamada());
+        acervo.setAutor(request.getAutor());
+        acervo.setTitulo(request.getTitulo());
+        acervo.setImprenta(request.getImprenta());
+        acervo.setFormatoFisico(request.getFormatoFisico());
+        acervo.setAssuntos(request.getAssuntos());
+        acervo.setOutrosAutores(request.getOutrosAutores());
+        acervo.setDataAtualizacao(new Date());
+        return acervo;
+    }
 }
