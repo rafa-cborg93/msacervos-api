@@ -1,0 +1,17 @@
+CREATE TABLE acervo (
+                        id BIGINT NOT NULL AUTO_INCREMENT,
+                        isbn INTEGER NOT NULL,
+                        numero_chamada VARCHAR(20) NOT NULL,
+                        autor VARCHAR(20) NOT NULL,
+                        titulo VARCHAR(30) NOT NULL,
+                        local VARCHAR(30) NOT NULL,
+                        editora VARCHAR(30) NOT NULL,
+                        ano Integer NOT NULL,
+                        paginas integer NOT NULL,
+                        il boolean,
+                        dimensoes VARCHAR(20) NOT NULL,
+                        assuntos VARCHAR(100) NOT NULL,
+                        outros_autores VARCHAR(100) NOT NULL,
+                        data_cadastro DATE NOT NULL,
+                        data_atualizacao DATE NOT NULL,
+                        PRIMARY KEY (id));

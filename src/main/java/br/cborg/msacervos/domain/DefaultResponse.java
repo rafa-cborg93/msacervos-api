@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DefaultResponse {
-    private String code;
+    private Integer code;
     private String message;
     private Object data;
 
-    public DefaultResponse(String code, String message) {
+    public DefaultResponse(Integer code, String message) {
         this.code = code;
         this.message = message;
     }
