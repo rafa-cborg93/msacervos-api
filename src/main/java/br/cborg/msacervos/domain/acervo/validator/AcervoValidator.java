@@ -17,7 +17,7 @@ public class AcervoValidator {
     public void validateAcervoRequest(AcervoRequest request) {
         List<String> emptyFields = new ArrayList<>();
 
-        if (request.getIsbn() == null ) {
+        if (request.getIsbn() == null  || request.getIsbn().isEmpty()) {
             emptyFields.add("isbn");
         }
         if (request.getNumeroChamada() == null || request.getNumeroChamada().isEmpty()) {
@@ -46,7 +46,7 @@ public class AcervoValidator {
         }
     }
 
-    public void verifyIfIsbnAlreadyExists(Integer isbn) {
+    public void verifyIfIsbnAlreadyExists(String isbn) {
         Optional<Acervo> acervo = acervoRepository.findByIsbn(isbn);
         if (acervo.isPresent()) {
             throw new IllegalArgumentException("The isbn " + isbn + " already exists.");

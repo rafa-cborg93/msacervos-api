@@ -1,6 +1,6 @@
 CREATE TABLE acervo (
                         id BIGINT NOT NULL AUTO_INCREMENT,
-                        isbn INTEGER NOT NULL,
+                        isbn VARCHAR(30) NOT NULL,
                         numero_chamada VARCHAR(20) NOT NULL,
                         autor VARCHAR(20) NOT NULL,
                         titulo VARCHAR(30) NOT NULL,

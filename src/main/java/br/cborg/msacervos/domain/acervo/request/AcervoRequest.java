@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class AcervoRequest {
-    private Integer isbn;
+    private String isbn;
     private String numeroChamada;
     private String autor;
     private String titulo;

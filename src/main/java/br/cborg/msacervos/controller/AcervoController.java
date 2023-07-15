@@ -3,12 +3,9 @@ package br.cborg.msacervos.controller;
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.domain.acervo.service.AcervoService;
-import br.cborg.msacervos.entity.Acervo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/acervo")
@@ -16,14 +13,14 @@ import java.util.List;
 public class AcervoController {
 
     private final AcervoService acervoService;
-    @GetMapping()
-    public ResponseEntity<DefaultResponse> findAll() {
-        DefaultResponse response = acervoService.findAll();
+    @GetMapping("/search")
+    public ResponseEntity<DefaultResponse> getAcervos(@RequestParam(value = "isbn", required = false) String isbn, @RequestParam(value = "numeroChamada", required = false) String numeroChamada) {
+        DefaultResponse response = acervoService.getAcervoList(isbn, numeroChamada);
         return ResponseEntity.status(response.getCode()).body(response);
     }
-    @PostMapping
-    public ResponseEntity<DefaultResponse> save(@RequestBody AcervoRequest request) {
-        DefaultResponse response = acervoService.save(request);
+    @PostMapping("/create")
+    public ResponseEntity<DefaultResponse> postAcervo(@RequestBody AcervoRequest request) {
+        DefaultResponse response = acervoService.createAcervo(request);
         return ResponseEntity.status(response.getCode()).body(response);
     }
 }
