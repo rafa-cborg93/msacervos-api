@@ -43,7 +43,7 @@ public class AcervoService {
             acervoRepository.save(acervo);
 
             log.info("createAcervo() - acervo saved successfully.");
-            return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_SAVE);
+            return new DefaultResponse(HttpStatus.CREATED.value(), AcervoConstants.SUCCESSFULLY_TO_SAVE);
         } catch (Exception e) {
             log.error("createAcervo() - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
