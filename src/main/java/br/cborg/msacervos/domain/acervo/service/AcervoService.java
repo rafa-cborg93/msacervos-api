@@ -1,5 +1,6 @@
 package br.cborg.msacervos.domain.acervo.service;
 
+import br.cborg.msacervos.constants.AcervoConstants;
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.domain.acervo.response.AcervoResponse;
@@ -20,6 +21,7 @@ import java.util.function.Supplier;
 @Service
 @RequiredArgsConstructor
 public class AcervoService {
+
     private final AcervoRepository acervoRepository;
     private final AcervoUtils acervoUtils;
     private final AcervoValidator acervoValidator;
@@ -41,7 +43,7 @@ public class AcervoService {
             acervoRepository.save(acervo);
 
             log.info("createAcervo() - acervo saved successfully.");
-            return new DefaultResponse(HttpStatus.OK.value(), "Successfully to save.");
+            return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_SAVE);
         } catch (Exception e) {
             log.error("createAcervo() - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -71,11 +73,16 @@ public class AcervoService {
             log.info("returnAcervoList() - finding all acervo.");
             List<Acervo> acervoList = listSupplier.get();
 
+            if (acervoList.isEmpty()) {
+                log.error("returnAcervoList() - acervo list is empty.");
+                return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.EMPTY_LIST);
+            }
+
             log.info("returnAcervoList() - converting list to response.");
             List<AcervoResponse> acervoResponseList = acervoUtils.convertToRsponseList(acervoList);
 
             log.info("returnAcervoList() - [END] acervoResponseList: {}", acervoResponseList);
-            return new DefaultResponse(HttpStatus.OK.value(), "Successfully to generate list.", acervoResponseList);
+            return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_GENERATE_LIST, acervoResponseList);
         } catch (Exception e) {
             log.error("returnAcervoList() - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -90,7 +97,7 @@ public class AcervoService {
             Optional<Acervo> optional = acervoRepository.findById(id);
             if (!optional.isPresent()) {
                 log.error("updateAcervo() - acervo with id:{} not found.", id);
-                return new DefaultResponse(HttpStatus.NOT_FOUND.value(), "Acervo with id:" + id + " not found.");
+                return new DefaultResponse(HttpStatus.NOT_FOUND.value(), String.format(AcervoConstants.ID_NOT_FOUND, id));
             }
             log.info("updateAcervo() - converting request to entity.");
             Acervo acervo = acervoUtils.buildToUpdate(request, optional.get());
@@ -99,7 +106,7 @@ public class AcervoService {
             acervoRepository.save(acervo);
 
             log.info("updateAcervo() - acervo saved successfully.");
-            return new DefaultResponse(HttpStatus.OK.value(), "Successfully to update.");
+            return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_UPDATE);
         } catch (Exception e) {
             log.error("updateAcervo() - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -114,14 +121,14 @@ public class AcervoService {
             Optional<Acervo> optional = acervoRepository.findById(id);
             if (!optional.isPresent()) {
                 log.error("deleteAcervo() - acervo with id:{} not found.", id);
-                return new DefaultResponse(HttpStatus.NOT_FOUND.value(), "Acervo with id:" + id + " not found.");
+                return new DefaultResponse(HttpStatus.NOT_FOUND.value(), String.format(AcervoConstants.ID_NOT_FOUND, id));
             }
             Acervo acervo = optional.get();
             log.info("deleteAcervo() - acervo: {}", acervo);
             acervoRepository.delete(acervo);
 
             log.info("deleteAcervo() - acervo deleted successfully.");
-            return new DefaultResponse(HttpStatus.OK.value(), "Successfully to delete.");
+            return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_DELETE);
         } catch (Exception e) {
             log.error("deleteAcervo() - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());

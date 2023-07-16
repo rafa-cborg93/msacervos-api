@@ -8,6 +8,6 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class FormatoFisico {
     private Integer paginas;
-    private String il;
+    private boolean il;
     private String dimensoes;
 }

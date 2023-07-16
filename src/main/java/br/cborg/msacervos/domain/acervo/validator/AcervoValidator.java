@@ -1,5 +1,6 @@
 package br.cborg.msacervos.domain.acervo.validator;
 
+import br.cborg.msacervos.constants.AcervoConstants;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.entity.Acervo;
 import br.cborg.msacervos.repository.AcervoRepository;
@@ -42,14 +43,14 @@ public class AcervoValidator {
             emptyFields.add("outrosAutores");
         }
         if (!emptyFields.isEmpty()) {
-            throw new IllegalArgumentException("The following fields are required: " + emptyFields.toString());
+            throw new IllegalArgumentException("The following fields are required: " + emptyFields);
         }
     }
 
     public void verifyIfIsbnAlreadyExists(String isbn) {
         Optional<Acervo> acervo = acervoRepository.findByIsbn(isbn);
         if (acervo.isPresent()) {
-            throw new IllegalArgumentException("The isbn " + isbn + " already exists.");
+            throw new IllegalArgumentException(String.format(AcervoConstants.ISBN_ALREADY_EXISTS, isbn));
         }
     }
 }
