@@ -59,7 +59,7 @@ public class AcervoService {
             return returnAcervoList(() -> acervoRepository.findAcervoListByIsbn(isbn));
         } else if (numeroChamada != null) {
             log.info("getAcervoList() - finding acervo by numeroChamada: {}", numeroChamada);
-            return returnAcervoList(() -> acervoRepository.getAcervoListByNumeroChamada(numeroChamada));
+            return returnAcervoList(() -> acervoRepository.findAcervoListByNumeroChamada(numeroChamada));
         } else {
             log.info("getAcervoList() - finding all acervos.");
             return returnAcervoList(() -> acervoRepository.findAll());

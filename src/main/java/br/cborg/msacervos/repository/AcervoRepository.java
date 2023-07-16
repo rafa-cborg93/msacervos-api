@@ -12,5 +12,5 @@ public interface AcervoRepository extends JpaRepository<Acervo, Long> {
     Optional<Acervo> findByIsbn(String isbn);
     List<Acervo> findAcervoListByIsbnAndNumeroChamada(String isbn, String numeroChamada);
     List<Acervo> findAcervoListByIsbn(String isbn);
-    List<Acervo> getAcervoListByNumeroChamada(String numeroChamada);
+    List<Acervo> findAcervoListByNumeroChamada(String numeroChamada);
 }
