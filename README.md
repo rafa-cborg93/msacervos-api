@@ -1,14 +1,15 @@
-# template-api-java
-Projeto base para utilizar em aplicações spring boot
+# msacervos-api
+Primeiro microservice para o projeto de sistema de gestão de acervos e emprestimos.
 
-### Estrutura de pastas
+### Arquitetura
+A arquitetura utilizada para o desenvolvimento do projeto foi a presente 
+[Neste link](https://github.com/rafa-cborg93/template-api-java). 
 
-* **constants**: Responsável por conter as constantes utilizadas na aplicação.
-* **domain**: Será o núcleo de negócio da aplicação, nela serão inseridos os contextos da aplicação(validaroes, conversores e serviços), 
-  assim como requests e responses e DTOs utilizadas com os clientes.
-* **controller**: Utilizada para chamadas rest vindas do client. Nela não será tratada nenhuma regra de negócio, deve apenas devolver o retorno dos services.
-* **service**: Responsável por controlar as regras de negócio da aplicação.
-* **entity**: Responsável por conter as entidades e o mapeamento JPA.
-* **repository**: Responsável por conter os repositórios JPA.
-* **utils**: Classe de utilitarios utilizados por toda a aplicação(validsdores e conversores).
+### Tecnologias
+- Java 11
+- Spring Boot 2.7.13
+- Spring Data 2.7.13
+- Lombok 1.18.28
+- H2 Database 2.1.214
+- Flyway 8.5.13
 
