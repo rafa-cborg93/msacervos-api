@@ -21,6 +21,7 @@ import javax.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -101,7 +102,7 @@ class AcervoServiceTest {
     }
 
     @Test
-    void getAllAcervos(){
+    void getAllAcervos() {
         List<Acervo> acervoList = List.of(getAcervo());
         when(acervoRepository.findAll()).thenReturn(acervoList);
 
@@ -110,8 +111,9 @@ class AcervoServiceTest {
         assertEquals(HttpStatus.OK.value(), response.getCode());
         verify(acervoRepository, times(1)).findAll();
     }
+
     @Test
-    void getAcervosReturnEmptyList(){
+    void getAcervosReturnEmptyList() {
         List<Acervo> acervoList = new ArrayList<>();
         when(acervoRepository.findAll()).thenReturn(acervoList);
 
@@ -120,8 +122,9 @@ class AcervoServiceTest {
         assertEquals(HttpStatus.OK.value(), response.getCode());
         verify(acervoRepository, times(1)).findAll();
     }
+
     @Test
-    void getAcervoListError(){
+    void getAcervoListError() {
         when(acervoRepository.findAll()).thenThrow(PersistenceException.class);
 
         DefaultResponse response = acervoService.getAcervoList(null, null);
@@ -132,10 +135,66 @@ class AcervoServiceTest {
 
     @Test
     void updateAcervo() {
+        AcervoRequest request = getAcervoRequest();
+        Acervo acervo = getAcervo();
+        when(acervoRepository.findById(1L)).thenReturn(Optional.of(acervo));
+        when(acervoUtils.convertRequestToEntity(request)).thenReturn(acervo);
+        when(acervoRepository.save(acervo)).thenReturn(acervo);
+
+        DefaultResponse response = acervoService.updateAcervo(1L, request);
+        assertEquals(HttpStatus.OK.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
+    }
+    @Test
+    void updateAcervoValidateRequestError() {
+        AcervoRequest request = getAcervoRequest();
+        doThrow(PersistenceException.class).when(acervoRepository).findById(1L);
+
+        DefaultResponse response = acervoService.updateAcervo(1L, request);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void updateAcervoReturnNotFound(){
+        AcervoRequest request = getAcervoRequest();
+        when(acervoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DefaultResponse response = acervoService.updateAcervo(1L, request);
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
     }
 
     @Test
     void deleteAcervo() {
+        Acervo acervo = getAcervo();
+        when(acervoRepository.findById(1L)).thenReturn(Optional.of(acervo));
+
+        DefaultResponse response = acervoService.deleteAcervo(1L);
+
+        assertEquals(HttpStatus.OK.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
+    }
+
+    @Test
+    void deleteAcervoReturnNotFound() {
+        when(acervoRepository.findById(1L)).thenReturn(Optional.empty());
+
+        DefaultResponse response = acervoService.deleteAcervo(1L);
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
+    }
+    @Test
+    void deleteAcervoError() {
+        when(acervoRepository.findById(1L)).thenThrow(PersistenceException.class);
+
+        DefaultResponse response = acervoService.deleteAcervo(1L);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getCode());
+        verify(acervoRepository, times(1)).findById(1L);
     }
 
     public Acervo getAcervo() {
