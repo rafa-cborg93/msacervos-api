@@ -2,6 +2,7 @@ package br.cborg.msacervos.domain.acervo.service;
 
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
+import br.cborg.msacervos.domain.acervo.response.AcervoResponse;
 import br.cborg.msacervos.domain.acervo.validator.AcervoValidator;
 import br.cborg.msacervos.domain.acervo.vo.FormatoFisico;
 import br.cborg.msacervos.domain.acervo.vo.Imprenta;
@@ -70,8 +71,12 @@ class AcervoServiceTest {
 
     @Test
     void getAcervoListByIsbnAndNumeroChamada() {
+        AcervoResponse acervoResponse = getAcervoResponse();
+        List<AcervoResponse> responseList = List.of(acervoResponse);
         List<Acervo> acervoList = List.of(getAcervo());
+
         when(acervoRepository.findAcervoListByIsbnAndNumeroChamada("123", "123")).thenReturn(acervoList);
+        when(acervoUtils.convertToRsponseList(acervoList)).thenReturn(responseList);
 
         DefaultResponse response = acervoService.getAcervoList("123", "123");
 
@@ -81,8 +86,12 @@ class AcervoServiceTest {
 
     @Test
     void getAcervoListByIsbn() {
+        AcervoResponse acervoResponse = getAcervoResponse();
+        List<AcervoResponse> responseList = List.of(acervoResponse);
         List<Acervo> acervoList = List.of(getAcervo());
+
         when(acervoRepository.findAcervoListByIsbn("123")).thenReturn(acervoList);
+        when(acervoUtils.convertToRsponseList(acervoList)).thenReturn(responseList);
 
         DefaultResponse response = acervoService.getAcervoList("123", null);
 
@@ -92,8 +101,12 @@ class AcervoServiceTest {
 
     @Test
     void getAcervoListByNumeroChamada() {
+        AcervoResponse acervoResponse = getAcervoResponse();
+        List<AcervoResponse> responseList = List.of(acervoResponse);
         List<Acervo> acervoList = List.of(getAcervo());
+
         when(acervoRepository.findAcervoListByNumeroChamada("123")).thenReturn(acervoList);
+        when(acervoUtils.convertToRsponseList(acervoList)).thenReturn(responseList);
 
         DefaultResponse response = acervoService.getAcervoList(null, "123");
 
@@ -104,7 +117,11 @@ class AcervoServiceTest {
     @Test
     void getAllAcervos() {
         List<Acervo> acervoList = List.of(getAcervo());
+        AcervoResponse acervoResponse = getAcervoResponse();
+        List<AcervoResponse> responseList = List.of(acervoResponse);
+
         when(acervoRepository.findAll()).thenReturn(acervoList);
+        when(acervoUtils.convertToRsponseList(acervoList)).thenReturn(responseList);
 
         DefaultResponse response = acervoService.getAcervoList(null, null);
 
@@ -115,6 +132,7 @@ class AcervoServiceTest {
     @Test
     void getAcervosReturnEmptyList() {
         List<Acervo> acervoList = new ArrayList<>();
+
         when(acervoRepository.findAll()).thenReturn(acervoList);
 
         DefaultResponse response = acervoService.getAcervoList(null, null);
@@ -223,6 +241,20 @@ class AcervoServiceTest {
         request.setAssuntos("Assuntos");
         request.setOutrosAutores("Outros Autores");
         return request;
+    }
+    public AcervoResponse getAcervoResponse(){
+        AcervoResponse response = new AcervoResponse();
+        response.setIsbn("123");
+        response.setNumeroChamada("123");
+        response.setTitulo("Titulo");
+        response.setAutor("Autor");
+        response.setImprenta(getImprenta());
+        response.setFormatoFisico(getFormatoFisico());
+        response.setAssuntos("Assuntos");
+        response.setOutrosAutores("Outros Autores");
+        response.setDataCadastro(new Date());
+        response.setDataAtualizacao(new Date());
+        return response;
     }
 
     public Imprenta getImprenta() {
