@@ -1,5 +1,7 @@
 package br.cborg.msacervos.domain.acervo.validator;
 
+import br.cborg.msacervos.Exceptions.ISBNAlReadyExistsException;
+import br.cborg.msacervos.Exceptions.ValidateRequestException;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.domain.acervo.vo.FormatoFisico;
 import br.cborg.msacervos.domain.acervo.vo.Imprenta;
@@ -45,49 +47,49 @@ class AcervoValidatorTest {
     void validateAcervoRequestTestWithNullIsbn() {
         AcervoRequest request = getAcervoRequest();
         request.setIsbn(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullNumeroChamada() {
         AcervoRequest request = getAcervoRequest();
         request.setNumeroChamada(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullAutor() {
         AcervoRequest request = getAcervoRequest();
         request.setAutor(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullTitulo() {
         AcervoRequest request = getAcervoRequest();
         request.setTitulo(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullImprenta() {
         AcervoRequest request = getAcervoRequest();
         request.setImprenta(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullFormatoFisico() {
         AcervoRequest request = getAcervoRequest();
         request.setFormatoFisico(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullAssuntos() {
         AcervoRequest request = getAcervoRequest();
         request.setAssuntos(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
     @Test
     void validateAcervoRequestTestWithNullOutrosAutores() {
         AcervoRequest request = getAcervoRequest();
         request.setOutrosAutores(null);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.validateAcervoRequest(request));
+        assertThrows(ValidateRequestException.class, () -> acervoValidator.validateAcervoRequest(request));
     }
 
     @Test
@@ -95,7 +97,7 @@ class AcervoValidatorTest {
         Acervo acervo = getAcervo();
         Optional<Acervo> acervoOptional = Optional.of(acervo);
         when(acervoRepository.findByIsbn(anyString())).thenReturn(acervoOptional);
-        assertThrows(IllegalArgumentException.class, () -> acervoValidator.verifyIfIsbnAlreadyExists("123456789"));
+        assertThrows(ISBNAlReadyExistsException.class, () -> acervoValidator.verifyIfIsbnAlreadyExists("123456789"));
     }
 
     public Acervo getAcervo() {

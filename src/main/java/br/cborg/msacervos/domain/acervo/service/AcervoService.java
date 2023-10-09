@@ -1,5 +1,7 @@
 package br.cborg.msacervos.domain.acervo.service;
 
+import br.cborg.msacervos.Exceptions.ISBNAlReadyExistsException;
+import br.cborg.msacervos.Exceptions.ValidateRequestException;
 import br.cborg.msacervos.constants.AcervoConstants;
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
@@ -28,109 +30,99 @@ public class AcervoService {
 
     public DefaultResponse createAcervo(AcervoRequest request) {
         try {
-            log.info("createAcervo({}) - [START] start process of save acervo.", request);
+            log.info("[AcervoService] createAcervo() - [START] start process of save acervo.");
 
-            log.info("createAcervo() - validating request.", request);
             acervoValidator.validateAcervoRequest(request);
-
-            log.info("createAcervo() - verifying if isbn already exists.");
             acervoValidator.verifyIfIsbnAlreadyExists(request.getIsbn());
-
-            log.info("createAcervo() - converting request to entity.");
             Acervo acervo = acervoUtils.convertRequestToEntity(request);
 
-            log.info("createAcervo() - acervo: {}", acervo);
             acervoRepository.save(acervo);
 
-            log.info("createAcervo() - acervo saved successfully.");
+            log.info("[AcervoService] createAcervo() - acervo saved successfully.");
             return new DefaultResponse(HttpStatus.CREATED.value(), AcervoConstants.SUCCESSFULLY_TO_SAVE);
+        } catch (ValidateRequestException v) {
+            log.error("[AcervoService] createAcervo() - ValidateRequestException - error:{}", v.getMessage());
+            return new DefaultResponse(HttpStatus.BAD_REQUEST.value(), v.getMessage());
+        } catch (ISBNAlReadyExistsException i) {
+            log.error("[AcervoService] createAcervo() - ISBNAlReadyExistsException - error:{}", i.getMessage());
+            return new DefaultResponse(HttpStatus.BAD_REQUEST.value(), i.getMessage());
         } catch (Exception e) {
-            log.error("createAcervo() - error:{}", e.getStackTrace());
+            log.error("[AcervoService] createAcervo() - Exception - error:{}", e.getMessage());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
     public DefaultResponse getAcervoList(String isbn, String numeroChamada) {
         if (isbn != null && numeroChamada != null) {
-            log.info("getAcervoList() - finding acervo by isbn: {} and numeroChamada: {}", isbn, numeroChamada);
+            log.info("[AcervoService] getAcervoList() - finding acervo by isbn: {} and numeroChamada: {}", isbn, numeroChamada);
             return returnAcervoList(() -> acervoRepository.findAcervoListByIsbnAndNumeroChamada(isbn, numeroChamada));
         } else if (isbn != null) {
-            log.info("getAcervoList() - finding acervo by isbn: {}", isbn);
+            log.info("[AcervoService] getAcervoList() - finding acervo by isbn: {}", isbn);
             return returnAcervoList(() -> acervoRepository.findAcervoListByIsbn(isbn));
         } else if (numeroChamada != null) {
-            log.info("getAcervoList() - finding acervo by numeroChamada: {}", numeroChamada);
+            log.info("[AcervoService] getAcervoList() - finding acervo by numeroChamada: {}", numeroChamada);
             return returnAcervoList(() -> acervoRepository.findAcervoListByNumeroChamada(numeroChamada));
         } else {
-            log.info("getAcervoList() - finding all acervos.");
+            log.info("[AcervoService] getAcervoList() - finding all acervos.");
             return returnAcervoList(() -> acervoRepository.findAll());
         }
     }
 
     private DefaultResponse returnAcervoList(Supplier<List<Acervo>> listSupplier) {
         try {
-            log.info("returnAcervoList() - [START] start process of find acervos.");
-
-            log.info("returnAcervoList() - finding all acervo.");
+            log.info("[AcervoService] returnAcervoList() - [START] start process of find acervos.");
             List<Acervo> acervoList = listSupplier.get();
 
             if (acervoList.isEmpty()) {
-                log.error("returnAcervoList() - acervo list is empty.");
+                log.error("[AcervoService] returnAcervoList() - acervo list is empty.");
                 return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.EMPTY_LIST);
             }
-
-            log.info("returnAcervoList() - converting list to response.");
             List<AcervoResponse> acervoResponseList = acervoUtils.convertToRsponseList(acervoList);
 
-            log.info("returnAcervoList() - [END] acervoResponseList: {}", acervoResponseList);
+            log.info("[AcervoService] returnAcervoList() - [END] acervoResponseList: {}", acervoResponseList);
             return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_GENERATE_LIST, acervoResponseList);
         } catch (Exception e) {
-            log.error("returnAcervoList() - error:{}", e.getStackTrace());
+            log.error("[AcervoService] returnAcervoList() - Exception - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
     public DefaultResponse updateAcervo(Long id, AcervoRequest request) {
         try {
-            log.info("updateAcervo({},{}) - [START] start process of update acervo.", id, request);
+            log.info("[AcervoService] updateAcervo() - [START] start process of update acervo with id={}", id);
 
-            log.info("updateAcervo() - verifying if isbn already exists.");
             Optional<Acervo> optional = acervoRepository.findById(id);
             if (!optional.isPresent()) {
-                log.error("updateAcervo() - acervo with id:{} not found.", id);
+                log.error("[AcervoService] updateAcervo() - acervo with id:{} not found.", id);
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), String.format(AcervoConstants.ID_NOT_FOUND, id));
             }
-            log.info("updateAcervo() - converting request to entity.");
             Acervo acervo = acervoUtils.buildToUpdate(request, optional.get());
-
-            log.info("updateAcervo() - acervo: {}", acervo);
             acervoRepository.save(acervo);
 
-            log.info("updateAcervo() - acervo saved successfully.");
+            log.info("[AcervoService] updateAcervo() - acervo saved successfully.");
             return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_UPDATE);
         } catch (Exception e) {
-            log.error("updateAcervo() - error:{}", e.getStackTrace());
+            log.error("[AcervoService] updateAcervo() -Exception - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
 
     public DefaultResponse deleteAcervo(Long id) {
         try {
-            log.info("deleteAcervo({}) - [START] start process of delete acervo.", id);
+            log.info("[AcervoService] deleteAcervo() - [START] start process of delete acervo with id={}", id);
 
-            log.info("deleteAcervo() - verifying if isbn already exists.");
             Optional<Acervo> optional = acervoRepository.findById(id);
             if (!optional.isPresent()) {
-                log.error("deleteAcervo() - acervo with id:{} not found.", id);
+                log.error("[AcervoService] deleteAcervo() - acervo with id:{} not found.", id);
                 return new DefaultResponse(HttpStatus.NOT_FOUND.value(), String.format(AcervoConstants.ID_NOT_FOUND, id));
             }
             Acervo acervo = optional.get();
-            log.info("deleteAcervo() - acervo: {}", acervo);
             acervoRepository.delete(acervo);
 
-            log.info("deleteAcervo() - acervo deleted successfully.");
+            log.info("[AcervoService] deleteAcervo() - acervo deleted successfully.");
             return new DefaultResponse(HttpStatus.OK.value(), AcervoConstants.SUCCESSFULLY_TO_DELETE);
         } catch (Exception e) {
-            log.error("deleteAcervo() - error:{}", e.getStackTrace());
+            log.error("[AcervoService] deleteAcervo() - Exception - error:{}", e.getStackTrace());
             return new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         }
     }
