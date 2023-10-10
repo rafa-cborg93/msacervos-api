@@ -1,0 +1,18 @@
+{
+  "isbn": "isbn_927f51bb5bd2",
+  "numeroChamada": "numeroChamada_6db98ffddd32",
+  "autor": "autor_be0386ed413e",
+  "titulo": "titulo_0bea5ec057b4",
+  "imprenta": {
+    "local": "local_6c81a53d0402",
+    "editora": "editora_e3e735f252ba",
+    "ano": "ano_fa23ae7deff1"
+  },
+  "formatoFisico": {
+    "paginas": 0,
+    "il": false,
+    "dimensoes": "dimensoes_119514db7601"
+  },
+  "assuntos": "assuntos_d3a0585664ca",
+  "outrosAutores": "outrosAutores_638a7896c2a8"
+}
