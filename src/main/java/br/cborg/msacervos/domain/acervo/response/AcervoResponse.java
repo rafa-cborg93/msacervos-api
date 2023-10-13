@@ -4,7 +4,6 @@ import br.cborg.msacervos.domain.acervo.vo.FormatoFisico;
 import br.cborg.msacervos.domain.acervo.vo.Imprenta;
 import lombok.Data;
 
-import javax.persistence.Embedded;
 import java.util.Date;
 
 @Data
@@ -21,3 +20,5 @@ public class AcervoResponse {
     private Date dataCadastro;
     private Date dataAtualizacao;
 }
+
+

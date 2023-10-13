@@ -2,7 +2,7 @@ package br.cborg.msacervos.controller;
 
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
-import br.cborg.msacervos.domain.acervo.service.AcervoService;
+import br.cborg.msacervos.service.AcervoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

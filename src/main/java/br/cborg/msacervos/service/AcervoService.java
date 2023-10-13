@@ -1,7 +1,7 @@
-package br.cborg.msacervos.domain.acervo.service;
+package br.cborg.msacervos.service;
 
-import br.cborg.msacervos.Exceptions.ISBNAlReadyExistsException;
-import br.cborg.msacervos.Exceptions.ValidateRequestException;
+import br.cborg.msacervos.exceptions.ISBNAlReadyExistsException;
+import br.cborg.msacervos.exceptions.ValidateRequestException;
 import br.cborg.msacervos.constants.AcervoConstants;
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
@@ -64,7 +64,7 @@ public class AcervoService {
             return returnAcervoList(() -> acervoRepository.findAcervoListByNumeroChamada(numeroChamada));
         } else {
             log.info("[AcervoService] getAcervoList() - finding all acervos.");
-            return returnAcervoList(() -> acervoRepository.findAll());
+            return returnAcervoList(acervoRepository::findAll);
         }
     }
 

@@ -3,7 +3,7 @@ package br.cborg.msacervos.controller;
 import br.cborg.msacervos.domain.DefaultResponse;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.domain.acervo.response.AcervoResponse;
-import br.cborg.msacervos.domain.acervo.service.AcervoService;
+import br.cborg.msacervos.service.AcervoService;
 import br.cborg.msacervos.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,16 +13,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -31,8 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class AcervoControllerTest {
-    @Autowired
-    private AcervoController acervoController;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,11 +44,10 @@ class AcervoControllerTest {
         acervoRequest = TestUtils.getAcervoRequest();
     }
 
-    //testes de integração
     @Test
     void getAcervosSuccessTest() throws Exception {
         List<AcervoResponse> acervoResponseList = new ArrayList<>();
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.OK.value(), "Empty List.", acervoResponseList);
+        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.OK.value(), "List.", acervoResponseList);
         when(acervoService.getAcervoList("123", "123")).thenReturn(serviceResponse);
 
         this.mockMvc.perform(get("/acervo/search")
@@ -208,129 +203,5 @@ class AcervoControllerTest {
                 .andDo(print())
                 .andExpect(jsonPath("$.code").value(500))
                 .andExpect(jsonPath("$.message").value("INTERNAL_SERVER_ERROR"));
-    }
-
-
-    //testes de classes
-
-    @Test
-    void getAcervos() {
-        List<AcervoResponse> acervoResponseList = new ArrayList<>();
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.OK.value(), "Empty List.", acervoResponseList);
-        when(acervoService.getAcervoList("123", "123")).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.getAcervos("123", "123");
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        verify(acervoService).getAcervoList("123", "123");
-    }
-
-    @Test
-    void getAcervoReturnError() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "BAD_REQUEST");
-        when(acervoService.getAcervoList("123", "123")).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.getAcervos("123", "123");
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
-        verify(acervoService).getAcervoList("123", "123");
-    }
-
-    @Test
-    void postAcervo() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.CREATED.value(), "Acervo created successfully.");
-        when(acervoService.createAcervo(acervoRequest)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.postAcervo(acervoRequest);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.CREATED.value(), response.getStatusCodeValue());
-        verify(acervoService).createAcervo(acervoRequest);
-    }
-
-    @Test
-    void postAcervoError() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "BAD_REQUEST");
-        when(acervoService.createAcervo(acervoRequest)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.postAcervo(acervoRequest);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
-        verify(acervoService).createAcervo(acervoRequest);
-    }
-
-    @Test
-    void updateAcervo() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.OK.value(), "Acervo updated successfully.");
-        when(acervoService.updateAcervo(1L, acervoRequest)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.updateAcervo(1L, acervoRequest);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        verify(acervoService).updateAcervo(1L, acervoRequest);
-    }
-
-    @Test
-    void updateAcervoError() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "BAD_REQUEST");
-        when(acervoService.updateAcervo(1L, acervoRequest)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.updateAcervo(1L, acervoRequest);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
-        verify(acervoService).updateAcervo(1L, acervoRequest);
-    }
-
-    @Test
-    void updateAcervoNotFoundError() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.NOT_FOUND.value(), "Acervo not found.");
-        when(acervoService.updateAcervo(1L, acervoRequest)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.updateAcervo(1L, acervoRequest);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
-        verify(acervoService).updateAcervo(1L, acervoRequest);
-    }
-
-    @Test
-    void deleteAcervo() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.OK.value(), "Acervo deleted successfully.");
-        when(acervoService.deleteAcervo(1L)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.deleteAcervo(1L);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.OK.value(), response.getStatusCodeValue());
-        verify(acervoService).deleteAcervo(1L);
-    }
-
-    @Test
-    void deleteAcervoError() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "BAD_REQUEST");
-        when(acervoService.deleteAcervo(1L)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.deleteAcervo(1L);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), response.getStatusCodeValue());
-        verify(acervoService).deleteAcervo(1L);
-    }
-
-    @Test
-    void updateAcervoErrorNotFound() {
-        DefaultResponse serviceResponse = new DefaultResponse(HttpStatus.NOT_FOUND.value(), "Acervo not found.");
-        when(acervoService.deleteAcervo(1L)).thenReturn(serviceResponse);
-
-        ResponseEntity<DefaultResponse> response = acervoController.deleteAcervo(1L);
-
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCodeValue());
-        verify(acervoService).deleteAcervo(1L);
     }
 }

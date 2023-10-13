@@ -1,7 +1,7 @@
 package br.cborg.msacervos.domain.acervo.validator;
 
-import br.cborg.msacervos.Exceptions.ISBNAlReadyExistsException;
-import br.cborg.msacervos.Exceptions.ValidateRequestException;
+import br.cborg.msacervos.exceptions.ISBNAlReadyExistsException;
+import br.cborg.msacervos.exceptions.ValidateRequestException;
 import br.cborg.msacervos.constants.AcervoConstants;
 import br.cborg.msacervos.domain.acervo.request.AcervoRequest;
 import br.cborg.msacervos.entity.Acervo;
